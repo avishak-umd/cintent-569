@@ -1,0 +1,42 @@
+# https://github.com/citation-file-format/citation-file-format/blob/main/schema-guide.md
+# Can be validated using `cffconvert --validate`
+authors:
+  - family-names: 'Stewart'
+    given-names: 'Adam J.'
+  - family-names: 'Robinson'
+    given-names: 'Caleb'
+  - family-names: 'Corley'
+    given-names: 'Isaac A.'
+  - family-names: 'Ortiz'
+    given-names: 'Anthony'
+  - family-names: 'Lavista Ferres'
+    given-names: 'Juan M.'
+  - family-names: 'Banerjee'
+    given-names: 'Arindam'
+cff-version: '1.2.0'
+message: 'If you use this software, please cite it using the metadata from this file.'
+preferred-citation:
+  authors:
+    - family-names: 'Stewart'
+      given-names: 'Adam J.'
+    - family-names: 'Robinson'
+      given-names: 'Caleb'
+    - family-names: 'Corley'
+      given-names: 'Isaac A.'
+    - family-names: 'Ortiz'
+      given-names: 'Anthony'
+    - family-names: 'Lavista Ferres'
+      given-names: 'Juan M.'
+    - family-names: 'Banerjee'
+      given-names: 'Arindam'
+  doi: '10.1145/3707459'
+  issn: '2374-0353'
+  journal: 'ACM Transactions on Spatial Algorithms and Systems'
+  month: 12
+  publisher:
+    name: 'Association for Computing Machinery'
+  title: 'TorchGeo: Deep Learning With Geospatial Data'
+  type: 'article'
+  url: 'https://doi.org/10.1145/3707459'
+  year: 2024
+title: 'TorchGeo: Deep Learning With Geospatial Data'
