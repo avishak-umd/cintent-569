@@ -35,9 +35,9 @@ jobs:
       #     key: ${{ runner.os }}-${{ runner.arch }}-Python-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('pyproject.toml') }}
       
       # CINTENT >> INSERT_CINTENT
-      - uses: JavidDitty/setup-cintent@main
-        with:
-          profiler: "setprofile"
+      # - uses: JavidDitty/setup-cintent@main
+      #   with:
+      #     profiler: "setprofile"
       
       - name: Install pip dependencies
         # CINTENT >> REMOVE_CACHE
@@ -57,12 +57,12 @@ jobs:
           torchgeo --help
 
       # CINTENT >> INSERT_CINTENT
-      - name: Upload CIntent Artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ${{ env.CINTENT_ARTIFACT_NAME }}
-          path: ${{ env.CINTENT_LOGS }}
+      # - name: Upload CIntent Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: ${{ env.CINTENT_ARTIFACT_NAME }}
+      #     path: ${{ env.CINTENT_LOGS }}
 
   notebooks:
     name: notebooks
@@ -85,9 +85,9 @@ jobs:
       
       
       # CINTENT >> INSERT_CINTENT
-      - uses: JavidDitty/setup-cintent@main
-        with:
-          profiler: "setprofile"
+      # - uses: JavidDitty/setup-cintent@main
+      #   with:
+      #     profiler: "setprofile"
 
       - name: Install pip dependencies
         # CINTENT >> REMOVE_CACHE
@@ -101,12 +101,12 @@ jobs:
         run: pytest --nbmake --durations=10 docs/tutorials
 
       # CINTENT >> INSERT_CINTENT
-      - name: Upload CIntent Artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ${{ env.CINTENT_ARTIFACT_NAME }}
-          path: ${{ env.CINTENT_LOGS }}
+      # - name: Upload CIntent Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: ${{ env.CINTENT_ARTIFACT_NAME }}
+      #     path: ${{ env.CINTENT_LOGS }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.head_ref || github.ref }}
