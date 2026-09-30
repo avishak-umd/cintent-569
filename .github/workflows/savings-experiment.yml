@@ -1,0 +1,73 @@
+# Measured-savings experiment for the TorchGeo notebook bottleneck.
+# The traces showed notebooks running one after another, each starting a
+# fresh kernel, and 12 of 14 notebooks re-running `%pip install` for
+# packages the workflow already installed.
+# fixed-nopip: remove the `%pip install` cells (no-ops in CI).
+# fixed-parallel: also run the notebooks in parallel (pytest -n auto).
+# Functionality checks: environment fingerprint and identical notebook
+# results (same notebooks pass). One run each, no instrumentation.
+
+name: savings-experiment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - savings-experiment
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  notebooks:
+    name: ${{ matrix.variant }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [baseline, fixed-nopip, fixed-parallel]
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v5.0.0
+      - name: Set up python
+        id: setup-python
+        uses: actions/setup-python@v6.0.0
+        with:
+          python-version: '3.13'
+      - name: Install pip dependencies
+        run: |
+          pip install .[docs,tests] planetary_computer pystac tensorboard h5py scikit-learn
+          pip cache purge
+      - name: Environment fingerprint
+        run: |
+          echo "packages: $(pip freeze | wc -l)"
+          echo "fingerprint: $(pip freeze | grep -viE '^torchgeo[= @]' | sort | sha256sum)"
+      - name: Install pytest-xdist
+        if: matrix.variant == 'fixed-parallel'
+        run: pip install pytest-xdist
+      - name: Remove pip cells
+        if: matrix.variant != 'baseline'
+        run: |
+          python - <<'PY'
+          import glob, json
+          for path in sorted(glob.glob("docs/tutorials/*.ipynb")):
+              nb = json.load(open(path))
+              removed = 0
+              for cell in nb["cells"]:
+                  if cell["cell_type"] != "code":
+                      continue
+                  keep = [l for l in cell["source"] if not l.lstrip().startswith(("%pip", "!pip"))]
+                  removed += len(cell["source"]) - len(keep)
+                  cell["source"] = keep
+              json.dump(nb, open(path, "w"), indent=1)
+              print(path, "pip lines removed:", removed)
+          PY
+      - name: Run notebook checks
+        run: |
+          if [ "${{ matrix.variant }}" = "fixed-parallel" ]; then
+            pytest --nbmake -n auto --durations=10 docs/tutorials
+          else
+            pytest --nbmake --durations=10 docs/tutorials
+          fi
